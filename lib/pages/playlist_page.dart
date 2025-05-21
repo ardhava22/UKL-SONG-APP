@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../services/playlist_service.dart';
 import 'song_list_page.dart';
-import 'add_song_page.dart'; // Tambahkan ini
+import 'add_song_page.dart';
 
 class PlaylistPage extends StatefulWidget {
   @override
@@ -25,62 +26,99 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.light); // Icon status bar putih
+
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Daftar Playlist'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => AddSongPage()),
-              );
-              if (result == 'success') {
-                fetchData(); // refresh otomatis
-              }
-            },
+        backgroundColor: Colors.black,
+        elevation: 0,
+        title: Text(
+          'Your Playlists',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+            color: Colors.white,
           ),
-        ],
+        ),
       ),
       body: playlists.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: EdgeInsets.all(16),
-              children: [
-                Text(
-                  '🎵 Pilih Playlist Favoritmu',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 16),
-                ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: playlists.length,
-                  itemBuilder: (context, index) {
-                    final item = playlists[index];
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      child: ListTile(
-                        leading: Icon(Icons.music_note),
-                        title: Text(item['playlist_name']),
-                        subtitle: Text('${item['song_count']} lagu'),
-                        trailing: Icon(Icons.arrow_forward_ios, size: 16),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  SongListPage(playlistId: item['uuid']),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
+          ? Center(child: CircularProgressIndicator(color: Colors.white))
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: ListView.separated(
+                itemCount: playlists.length,
+                separatorBuilder: (_, __) => SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final item = playlists[index];
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              SongListPage(playlistId: item['uuid']),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple[700],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(Icons.music_note,
+                              color: Colors.white, size: 30),
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item['playlist_name'],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                '${item['song_count']} lagu',
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.chevron_right, color: Colors.white),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.greenAccent[700],
+        child: Icon(Icons.add, color: Colors.black),
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => AddSongPage()),
+          );
+          if (result == 'success') {
+            fetchData();
+          }
+        },
+        tooltip: 'Tambah Lagu',
+      ),
     );
   }
 }

@@ -19,15 +19,18 @@ class _SongDetailPageState extends State<SongDetailPage> {
   void fetchDetail() async {
     final result = await songService.getSongDetail(widget.songId);
     final source = result['source'] ?? '';
-    if (YoutubePlayer.convertUrlToId(source) != null) {
+    final videoId = YoutubePlayer.convertUrlToId(source);
+
+    if (videoId != null) {
       _youtubeController = YoutubePlayerController(
-        initialVideoId: YoutubePlayer.convertUrlToId(source)!,
+        initialVideoId: videoId,
         flags: YoutubePlayerFlags(
           autoPlay: false,
           mute: false,
         ),
       );
     }
+
     setState(() {
       song = result;
       comments = result['comments'];
@@ -49,26 +52,37 @@ class _SongDetailPageState extends State<SongDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(song['title'] ?? 'Song Detail')),
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text(song['title'] ?? 'Song Detail'),
+      ),
       body: song.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: Colors.greenAccent))
           : Padding(
               padding: const EdgeInsets.all(16),
               child: ListView(
                 children: [
                   Text(
                     song['title'] ?? '',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 4),
                   Text(
-                    'Artist: ${song['artist']}',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[800]),
+                    'by ${song['artist'] ?? '-'}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[400],
+                    ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 12),
                   Text(
                     song['description'] ?? '',
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 14, color: Colors.white70),
                   ),
                   SizedBox(height: 16),
                   if (_youtubeController != null)
@@ -77,25 +91,49 @@ class _SongDetailPageState extends State<SongDetailPage> {
                         controller: _youtubeController!,
                         showVideoProgressIndicator: true,
                       ),
-                      builder: (context, player) => Column(
-                        children: [
-                          player,
-                        ],
+                      builder: (context, player) => ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: player,
                       ),
                     )
                   else
-                    Text('Video tidak tersedia atau link salah.'),
-                  SizedBox(height: 16),
-                  Divider(),
+                    Text(
+                      '🎬 Video tidak tersedia atau link salah.',
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
+                  SizedBox(height: 24),
+                  Divider(color: Colors.grey[700]),
                   Text(
-                    'Comments:',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    '💬 Komentar:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
                   ),
                   SizedBox(height: 8),
-                  ...comments.map((c) => ListTile(
-                        leading: Icon(Icons.comment),
-                        title: Text(c['creator'] ?? ''),
-                        subtitle: Text(c['comment_text'] ?? ''),
+                  if (comments.isEmpty)
+                    Text(
+                      'Belum ada komentar.',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ...comments.map((c) => Card(
+                        color: Colors.grey[900],
+                        margin: EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: ListTile(
+                          leading:
+                              Icon(Icons.comment, color: Colors.greenAccent),
+                          title: Text(
+                            c['creator'] ?? '',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          subtitle: Text(
+                            c['comment_text'] ?? '',
+                            style: TextStyle(color: Colors.white70),
+                          ),
+                        ),
                       )),
                 ],
               ),

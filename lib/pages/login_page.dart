@@ -21,15 +21,16 @@ class _LoginPageState extends State<LoginPage> {
         passwordController.text.trim(),
       );
       if (result['success']) {
-        final data = result['data'];
-        print('User: ${data['firstName']} ${data['lastName']}');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => PlaylistPage()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login gagal: ${result['message']}')),
+          SnackBar(
+            content: Text('Login gagal: ${result['message']}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -37,93 +38,86 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
+      backgroundColor: Colors.black,
       body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
-          Container(
-            height: MediaQuery.of(context).size.width * 0.7,
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.25),
+          SizedBox(height: width * 0.25),
+          Center(
             child: Column(
               children: [
-                Container(
-                    child: Text(
-                  "Hello Again!",
+                Icon(Icons.music_note, color: Colors.greenAccent, size: 60),
+                SizedBox(height: 16),
+                Text(
+                  "Welcome Back!",
                   style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.1,
-                      fontWeight: FontWeight.bold),
-                )),
-                Container(
-                  child: Text(
-                    "Welcome back you've",
-                    style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.05),
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-                Container(
-                  child: Text(
-                    "been missed!",
-                    style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.05),
+                SizedBox(height: 4),
+                Text(
+                  "Login to continue",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[400],
                   ),
-                )
+                ),
               ],
             ),
           ),
+          SizedBox(height: 40),
           Form(
             key: _formKey,
             child: Column(
               children: [
+                // Username Field
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.width * 0.15,
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.width * 0.02),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.02),
+                  margin: EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10), // Sudut melengkung
-                    border: Border.all(color: Colors.grey), // Garis tepi
+                    color: Colors.grey[900],
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    style: TextStyle(color: Colors.white),
                     controller: usernameController,
                     decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.person_outlined),
-                        label: Text("Username")),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Username tidak boleh kosong';
-                      }
-                      return null;
-                    },
+                      hintText: 'Username',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      prefixIcon: Icon(Icons.person, color: Colors.grey),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(16),
+                    ),
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Username wajib diisi'
+                        : null,
                   ),
                 ),
+                // Password Field
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.width * 0.15,
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.width * 0.02),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.02),
+                  margin: EdgeInsets.only(bottom: 24),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10), // Sudut melengkung
-                    border: Border.all(color: Colors.grey), // Garis tepi
+                    color: Colors.grey[900],
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    style: TextStyle(color: Colors.white),
                     controller: passwordController,
                     obscureText: !isPasswordVisible,
                     decoration: InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Icon(Icons.password_outlined),
-                      label: Text("Password"),
+                      hintText: 'Password',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      prefixIcon: Icon(Icons.lock, color: Colors.grey),
                       suffixIcon: IconButton(
                         icon: Icon(
                           isPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
+                          color: Colors.grey,
                         ),
                         onPressed: () {
                           setState(() {
@@ -131,35 +125,29 @@ class _LoginPageState extends State<LoginPage> {
                           });
                         },
                       ),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(16),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password tidak boleh kosong';
-                      }
-                      return null;
-                    },
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Password wajib diisi'
+                        : null,
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.width * 0.1),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.width * 0.14,
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
                   child: ElevatedButton(
+                    onPressed: login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, // Warna tombol
-                      foregroundColor: Colors.white, // Warna teks/spinner
+                      backgroundColor: Colors.greenAccent[700],
+                      foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: login,
                     child: Text(
-                      "Login",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      "LOGIN",
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

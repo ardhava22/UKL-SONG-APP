@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:song/services/service_song.dart';
@@ -11,10 +10,10 @@ class AddSongPage extends StatefulWidget {
 
 class _AddSongPageState extends State<AddSongPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController artistController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController sourceController = TextEditingController();
+  final titleController = TextEditingController();
+  final artistController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final sourceController = TextEditingController();
 
   File? thumbnail;
   bool isLoading = false;
@@ -32,7 +31,7 @@ class _AddSongPageState extends State<AddSongPage> {
     if (!_formKey.currentState!.validate()) return;
     if (thumbnail == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please choose a thumbnail')),
+        SnackBar(content: Text('Silakan pilih thumbnail')),
       );
       return;
     }
@@ -58,21 +57,20 @@ class _AddSongPageState extends State<AddSongPage> {
             context: context,
             barrierDismissible: false,
             builder: (_) => AlertDialog(
-              title: Text('Berhasil'),
+              title: Text('✅ Sukses'),
               content: Text('Lagu berhasil ditambahkan!'),
             ),
           );
-
           await Future.delayed(Duration(seconds: 3));
           if (mounted) {
             Navigator.of(context).pop(); // tutup dialog
-            Navigator.of(context).pop('success'); // kembali ke PlaylistPage
+            Navigator.of(context).pop('success'); // kembali ke playlist
           }
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed: $respStr')),
+            SnackBar(content: Text('Gagal: $respStr')),
           );
         }
       }
@@ -80,107 +78,114 @@ class _AddSongPageState extends State<AddSongPage> {
       if (mounted) setState(() => isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unexpected error: $e')),
+          SnackBar(content: Text('Terjadi kesalahan: $e')),
         );
       }
     }
   }
 
-  Widget _buildTextField({
+  Widget _buildField({
     required TextEditingController controller,
     required String label,
-    required String validatorMsg,
+    required String hint,
     int maxLines = 1,
   }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(color: Colors.grey[300])),
+        SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          maxLines: maxLines,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(color: Colors.grey[600]),
+            filled: true,
+            fillColor: Colors.grey[900],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty ? 'Wajib diisi' : null,
         ),
-      ),
-      validator: (value) => value!.isEmpty ? validatorMsg : null,
+        SizedBox(height: 16),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('🎶 Tambah Lagu Baru')),
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: Text('🎶 Tambah Lagu'),
+        backgroundColor: Colors.black,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              Text(
-                'Informasi Lagu',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Divider(),
-              SizedBox(height: 12),
-              _buildTextField(
+              _buildField(
                 controller: titleController,
                 label: 'Judul Lagu',
-                validatorMsg: 'Judul tidak boleh kosong',
+                hint: 'Contoh: Cinta Luar Biasa',
               ),
-              SizedBox(height: 12),
-              _buildTextField(
+              _buildField(
                 controller: artistController,
                 label: 'Artis / Penyanyi',
-                validatorMsg: 'Artis tidak boleh kosong',
+                hint: 'Contoh: Andmesh',
               ),
-              SizedBox(height: 12),
-              _buildTextField(
+              _buildField(
                 controller: descriptionController,
                 label: 'Deskripsi',
+                hint: 'Isi deskripsi lagu',
                 maxLines: 3,
-                validatorMsg: 'Deskripsi tidak boleh kosong',
               ),
-              SizedBox(height: 12),
-              _buildTextField(
+              _buildField(
                 controller: sourceController,
                 label: 'Link YouTube',
-                validatorMsg: 'Link tidak boleh kosong',
+                hint: 'https://youtube.com/...',
               ),
-              SizedBox(height: 20),
               Text(
                 'Thumbnail Lagu',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.grey[300]),
               ),
               SizedBox(height: 8),
               Row(
                 children: [
                   ElevatedButton.icon(
                     onPressed: pickImage,
-                    icon: Icon(Icons.upload_file),
-                    label: Text('Pilih File'),
+                    icon: Icon(Icons.image),
+                    label: Text('Pilih Gambar'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.greenAccent[700],
+                      foregroundColor: Colors.black,
+                    ),
                   ),
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       thumbnail?.path.split('/').last ?? 'Belum dipilih',
+                      style: TextStyle(color: Colors.white70),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
               if (thumbnail != null) ...[
-                SizedBox(height: 16),
-                Card(
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      thumbnail!,
-                      height: 160,
-                      fit: BoxFit.cover,
-                    ),
+                SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(
+                    thumbnail!,
+                    height: 160,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ],
@@ -190,22 +195,32 @@ class _AddSongPageState extends State<AddSongPage> {
                 children: [
                   TextButton.icon(
                     onPressed: () => Navigator.pop(context),
-                    icon: Icon(Icons.cancel),
-                    label: Text('Batal'),
+                    icon: Icon(Icons.cancel, color: Colors.grey),
+                    label: Text('Batal', style: TextStyle(color: Colors.grey)),
                   ),
                   ElevatedButton.icon(
                     onPressed: isLoading ? null : saveSong,
                     icon: isLoading
                         ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            height: 18,
+                            width: 18,
+                            child: CircularProgressIndicator(
+                                color: Colors.black, strokeWidth: 2),
                           )
                         : Icon(Icons.save),
-                    label: Text('Simpan Lagu'),
-                  ),
+                    label: Text('Simpan'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.greenAccent[700],
+                      foregroundColor: Colors.black,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  )
                 ],
-              ),
+              )
             ],
           ),
         ),
