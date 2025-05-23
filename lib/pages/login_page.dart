@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFF121212), // Warna latar belakang gelap
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
@@ -49,10 +49,10 @@ class _LoginPageState extends State<LoginPage> {
           Center(
             child: Column(
               children: [
-                Icon(Icons.music_note, color: Colors.greenAccent, size: 60),
+                Icon(Icons.music_note, color: Colors.purpleAccent, size: 60),
                 SizedBox(height: 16),
                 Text(
-                  "Welcome Back!",
+                  "Selamat Datang",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "Login to continue",
+                  "Silahkan Login Untuk Lanjut",
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey[400],
@@ -79,8 +79,9 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   margin: EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: Colors.grey[900],
+                    color: Colors.black.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[700]!),
                   ),
                   child: TextFormField(
                     style: TextStyle(color: Colors.white),
@@ -101,8 +102,9 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   margin: EdgeInsets.only(bottom: 24),
                   decoration: BoxDecoration(
-                    color: Colors.grey[900],
+                    color: Colors.black.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[700]!),
                   ),
                   child: TextFormField(
                     style: TextStyle(color: Colors.white),
@@ -139,8 +141,8 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.greenAccent[700],
-                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.purpleAccent,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

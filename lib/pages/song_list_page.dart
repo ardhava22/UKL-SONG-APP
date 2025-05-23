@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:song/pages/add_song_page.dart';
 import 'package:song/services/song_services.dart';
 import 'song_detail_page.dart';
 
@@ -45,6 +46,17 @@ class _SongListPageState extends State<SongListPage> {
         backgroundColor: Colors.black,
         title: Text('🎵 Daftar Lagu', style: TextStyle(color: Colors.white)),
         iconTheme: IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_circle, color: Colors.deepPurple[700]),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AddSongPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [

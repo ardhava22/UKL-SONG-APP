@@ -52,10 +52,15 @@ class _SongDetailPageState extends State<SongDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text(song['title'] ?? 'Song Detail'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          song['title'] ?? 'Song Detail',
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: song.isEmpty
           ? Center(child: CircularProgressIndicator(color: Colors.greenAccent))
@@ -66,52 +71,67 @@ class _SongDetailPageState extends State<SongDetailPage> {
                   Text(
                     song['title'] ?? '',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 26,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 6),
                   Text(
                     'by ${song['artist'] ?? '-'}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[400],
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 16),
                   Text(
                     song['description'] ?? '',
-                    style: TextStyle(fontSize: 14, color: Colors.white70),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white70,
+                    ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 20),
                   if (_youtubeController != null)
                     YoutubePlayerBuilder(
                       player: YoutubePlayer(
                         controller: _youtubeController!,
                         showVideoProgressIndicator: true,
+                        progressColors: ProgressBarColors(
+                          playedColor: Colors.greenAccent,
+                          handleColor: Colors.white,
+                        ),
                       ),
                       builder: (context, player) => ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                         child: player,
                       ),
                     )
                   else
-                    Text(
-                      '🎬 Video tidak tersedia atau link salah.',
-                      style: TextStyle(color: Colors.redAccent),
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '🎬 Video tidak tersedia atau link salah.',
+                        style: TextStyle(color: Colors.redAccent),
+                      ),
                     ),
-                  SizedBox(height: 24),
+                  SizedBox(height: 28),
                   Divider(color: Colors.grey[700]),
                   Text(
                     '💬 Komentar:',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 18,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 12),
                   if (comments.isEmpty)
                     Text(
                       'Belum ada komentar.',
@@ -127,7 +147,10 @@ class _SongDetailPageState extends State<SongDetailPage> {
                               Icon(Icons.comment, color: Colors.greenAccent),
                           title: Text(
                             c['creator'] ?? '',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           subtitle: Text(
                             c['comment_text'] ?? '',

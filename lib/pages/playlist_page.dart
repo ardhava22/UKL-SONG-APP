@@ -26,13 +26,12 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.light); // Icon status bar putih
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           'Your Playlists',
@@ -53,6 +52,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                 itemBuilder: (context, index) {
                   final item = playlists[index];
                   return InkWell(
+                    borderRadius: BorderRadius.circular(12),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -62,63 +62,74 @@ class _PlaylistPageState extends State<PlaylistPage> {
                         ),
                       );
                     },
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple[700],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(Icons.music_note,
-                              color: Colors.white, size: 30),
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.deepPurple[700]!, Colors.purple[400]!],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item['playlist_name'],
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '${item['song_count']} lagu',
-                                style: TextStyle(
-                                  color: Colors.grey[400],
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(Icons.music_note,
+                                color: Colors.white, size: 30),
                           ),
-                        ),
-                        Icon(Icons.chevron_right, color: Colors.white),
-                      ],
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['playlist_name'],
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  '${item['song_count']} lagu',
+                                  style: TextStyle(
+                                    color: Colors.grey[300],
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.chevron_right, color: Colors.white),
+                        ],
+                      ),
                     ),
                   );
                 },
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.greenAccent[700],
-        child: Icon(Icons.add, color: Colors.black),
-        onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => AddSongPage()),
-          );
-          if (result == 'success') {
-            fetchData();
-          }
-        },
-        tooltip: 'Tambah Lagu',
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.purpleAccent,
+      //   child: Icon(Icons.add, color: Colors.white),
+      //   onPressed: () async {
+      //     final result = await Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (_) => AddSongPage()),
+      //     );
+      //     if (result == 'success') {
+      //       fetchData();
+      //     }
+      //   },
+      //   tooltip: 'Tambah Lagu',
+      // ),
     );
   }
 }

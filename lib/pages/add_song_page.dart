@@ -93,8 +93,8 @@ class _AddSongPageState extends State<AddSongPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.grey[300])),
-        SizedBox(height: 6),
+        Text(label, style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           maxLines: maxLines,
@@ -108,11 +108,12 @@ class _AddSongPageState extends State<AddSongPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: maxLines > 1 ? 16 : 12),
           ),
           validator: (value) =>
               value == null || value.isEmpty ? 'Wajib diisi' : null,
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -124,12 +125,14 @@ class _AddSongPageState extends State<AddSongPage> {
       appBar: AppBar(
         title: Text('🎶 Tambah Lagu'),
         backgroundColor: Colors.black,
+        elevation: 1,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildField(
                 controller: titleController,
@@ -145,7 +148,7 @@ class _AddSongPageState extends State<AddSongPage> {
                 controller: descriptionController,
                 label: 'Deskripsi',
                 hint: 'Isi deskripsi lagu',
-                maxLines: 3,
+                maxLines: 4,
               ),
               _buildField(
                 controller: sourceController,
@@ -154,9 +157,9 @@ class _AddSongPageState extends State<AddSongPage> {
               ),
               Text(
                 'Thumbnail Lagu',
-                style: TextStyle(color: Colors.grey[300]),
+                style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.w600),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   ElevatedButton.icon(
@@ -164,39 +167,52 @@ class _AddSongPageState extends State<AddSongPage> {
                     icon: Icon(Icons.image),
                     label: Text('Pilih Gambar'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.greenAccent[700],
+                      backgroundColor: Colors.deepPurple[700],
                       foregroundColor: Colors.black,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
                     ),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Text(
                       thumbnail?.path.split('/').last ?? 'Belum dipilih',
-                      style: TextStyle(color: Colors.white70),
+                      style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w500),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
               if (thumbnail != null) ...[
-                SizedBox(height: 12),
+                const SizedBox(height: 20),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.file(
                     thumbnail!,
-                    height: 160,
+                    height: 180,
+                    width: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
               ],
-              SizedBox(height: 24),
+              const SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextButton.icon(
+                  OutlinedButton.icon(
                     onPressed: () => Navigator.pop(context),
-                    icon: Icon(Icons.cancel, color: Colors.grey),
-                    label: Text('Batal', style: TextStyle(color: Colors.grey)),
+                    icon: Icon(Icons.cancel, color: Colors.grey[400]),
+                    label: Text('Batal', style: TextStyle(color: Colors.grey[400])),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.grey[600]!),
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                   ElevatedButton.icon(
                     onPressed: isLoading ? null : saveSong,
@@ -210,17 +226,17 @@ class _AddSongPageState extends State<AddSongPage> {
                         : Icon(Icons.save),
                     label: Text('Simpan'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.greenAccent[700],
+                      backgroundColor: Colors.deepPurple[700],
                       foregroundColor: Colors.black,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      padding: EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      elevation: 4,
                     ),
                   )
                 ],
-              )
+              ),
             ],
           ),
         ),
