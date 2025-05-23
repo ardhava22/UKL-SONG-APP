@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'pages/login_page.dart';
+import 'views/login_page.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override

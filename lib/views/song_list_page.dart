@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:song/pages/add_song_page.dart';
+import 'package:song/views/add_song_page.dart';
 import 'package:song/services/song_services.dart';
 import 'song_detail_page.dart';
 
